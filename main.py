@@ -6,6 +6,7 @@ def display_time():
     score_surface = test_font.render(f'Score: {current_time}', False, (64,64,64))
     score_rect = score_surface.get_rect(center = (400,50))
     screen.blit(score_surface, score_rect)
+    return current_time
 
 pg.init()
 screen = pg.display.set_mode((800,400))
@@ -22,10 +23,21 @@ snail_rect = snail_surface.get_rect(midbottom = (600,300))
 
 player_surf = pg.image.load("graphics/Player/player_walk_1.png").convert_alpha()
 player_rect = player_surf.get_rect(midbottom = (80,300))
+
+player_stand_surf = pg.image.load("graphics/Player/player_stand.png").convert_alpha()
+player_stand_rect = player_stand_surf.get_rect(center = (400,200))
+
+game_start_text = test_font.render('Welcome, start or you\'re racist', False, 'white')
+game_start_text_rect = game_start_text.get_rect(center = (400, 125))
+
+game_start_text2 = test_font.render('press R to start.', False, 'white')
+game_start_text_rect2 = game_start_text.get_rect(center = (500, 275))
+
 player_gravity = 0
 start_time = 0
+score = 0
 
-game_active = True
+game_active = False
 
 while True:
     for event in pg.event.get():
@@ -46,7 +58,6 @@ while True:
                     snail_rect.left = 800
                     start_time = int(pg.time.get_ticks()/1000)
 
-# Game states
 
     if (game_active):
         screen.blit(sky_surface, (0,0))
@@ -54,7 +65,7 @@ while True:
         # pg.draw.rect(screen, '#c0e8ec', score_rect)
         # pg.draw.rect(screen, '#c0e8ec', score_rect, 10)
         # screen.blit(score_surface, score_rect)
-
+        score = display_time()
 
         snail_rect.left -= 4
         if snail_rect.right == 0 : snail_rect.left = 800
@@ -71,7 +82,17 @@ while True:
         #Collision
         if snail_rect.colliderect(player_rect):
             game_active = False
-    else: # Intro/Menu screen
-        screen.fill('yellow')
+    else: 
+        screen.fill((94,129,162))
+        screen.blit(player_stand_surf, player_stand_rect)
+        score_message = test_font.render(f'Your score: {score}', False, (111,196,196))
+        score_message_rect = score_message.get_rect(center = (400,50))
+        if score == 0:
+            screen.blit(game_start_text, game_start_text_rect)
+            screen.blit(game_start_text2, game_start_text_rect2)
+        else : 
+            screen.blit(score_message, score_message_rect)
+            screen.blit(game_start_text2, game_start_text_rect2)
+
     pg.display.update()
     clock.tick(60)
