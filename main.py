@@ -19,17 +19,19 @@ snail_rect = snail_surface.get_rect(midbottom = (600,300))
 
 player_surf = pg.image.load("graphics/Player/player_walk_1.png").convert_alpha()
 player_rect = player_surf.get_rect(midbottom = (80,300))
+player_gravity = 0
 
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
             exit()
+        if event.type == pg.MOUSEBUTTONDOWN:
+            if player_rect.collidepoint(event.pos):
+                player_gravity -= 20
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE:
-                print('jump')
-        if event.type == pg.KEYUP:
-            print('key up')        
+            if (event.key == pg.K_SPACE):
+                player_gravity -= 20
 
     screen.blit(sky_surface, (0,0))
     screen.blit(ground_surface, (0,300))
@@ -39,14 +41,13 @@ while True:
 
     snail_rect.left -= 2
     if snail_rect.right == 0 : snail_rect.left = 800
-
     screen.blit(snail_surface, snail_rect)
+
+    #Player 
+    player_gravity += 1
+    player_rect.y += player_gravity
     screen.blit(player_surf, player_rect)
 
-    # One of the ways to access the keys, the key.get_pressed function, similarely to the mouse returns an array of true or false saying if the key is pressed or not
-    # keys = pg.key.get_pressed()
-    # if keys[pg.K_SPACE]:
-    #     print("jump")
 
     pg.display.update()
     clock.tick(60)
