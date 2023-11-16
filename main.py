@@ -27,11 +27,11 @@ while True:
             pg.quit()
             exit()
         if event.type == pg.MOUSEBUTTONDOWN:
-            if player_rect.collidepoint(event.pos):
-                player_gravity -= 20
+            if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
+                player_gravity = -20
         if event.type == pg.KEYDOWN:
-            if (event.key == pg.K_SPACE):
-                player_gravity -= 20
+            if (event.key == pg.K_SPACE) and player_rect.bottom >= 300:
+                player_gravity = -20
 
     screen.blit(sky_surface, (0,0))
     screen.blit(ground_surface, (0,300))
@@ -45,9 +45,11 @@ while True:
 
     #Player 
     player_gravity += 1
-    player_rect.y += player_gravity
+    player_rect.y += player_gravity # on retire de la coordonnee Y gravity, example quand on saut la graviter devient -20, donc on retire -20 puis -19 car a chaque tour de boucle on ajoute la graviter de 1
+    if player_rect.bottom >= 300:
+        player_rect.bottom = 300
     screen.blit(player_surf, player_rect)
-
+    print("this is the current gravity", player_gravity)
 
     pg.display.update()
-    clock.tick(60)
+    clock.tick(10)
