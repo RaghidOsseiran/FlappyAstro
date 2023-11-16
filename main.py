@@ -21,35 +21,51 @@ player_surf = pg.image.load("graphics/Player/player_walk_1.png").convert_alpha()
 player_rect = player_surf.get_rect(midbottom = (80,300))
 player_gravity = 0
 
+game_active = True
+
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
             exit()
-        if event.type == pg.MOUSEBUTTONDOWN:
-            if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
-                player_gravity = -20
-        if event.type == pg.KEYDOWN:
-            if (event.key == pg.K_SPACE) and player_rect.bottom >= 300:
-                player_gravity = -20
+        if game_active:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if player_rect.collidepoint(event.pos) and player_rect.bottom >= 300:
+                    player_gravity = -20
+            if event.type == pg.KEYDOWN:
+                if (event.key == pg.K_SPACE) and player_rect.bottom >= 300:
+                    player_gravity = -20
+        else:
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_r:
+                    game_active = True
+                    snail_rect.left = 800
 
-    screen.blit(sky_surface, (0,0))
-    screen.blit(ground_surface, (0,300))
-    pg.draw.rect(screen, '#c0e8ec', score_rect)
-    pg.draw.rect(screen, '#c0e8ec', score_rect, 10)
-    screen.blit(score_surface, score_rect)
+# Game states
 
-    snail_rect.left -= 2
-    if snail_rect.right == 0 : snail_rect.left = 800
-    screen.blit(snail_surface, snail_rect)
+    if (game_active):
+        screen.blit(sky_surface, (0,0))
+        screen.blit(ground_surface, (0,300))
+        pg.draw.rect(screen, '#c0e8ec', score_rect)
+        pg.draw.rect(screen, '#c0e8ec', score_rect, 10)
+        screen.blit(score_surface, score_rect)
 
-    #Player 
-    player_gravity += 1
-    player_rect.y += player_gravity # on retire de la coordonnee Y gravity, example quand on saut la graviter devient -20, donc on retire -20 puis -19 car a chaque tour de boucle on ajoute la graviter de 1
-    if player_rect.bottom >= 300:
-        player_rect.bottom = 300
-    screen.blit(player_surf, player_rect)
-    print("this is the current gravity", player_gravity)
+        snail_rect.left -= 2
+        if snail_rect.right == 0 : snail_rect.left = 800
+        screen.blit(snail_surface, snail_rect)
 
+        #Player 
+        player_gravity += 1
+        player_rect.y += player_gravity
+        if player_rect.bottom >= 300:
+            player_rect.bottom = 300
+        screen.blit(player_surf, player_rect)
+        print("this is the current gravity", player_gravity)
+
+        #Collision
+        if snail_rect.colliderect(player_rect):
+            game_active = False
+    else: # Intro/Menu screen
+        screen.fill('yellow')
     pg.display.update()
-    clock.tick(10)
+    clock.tick(60)
