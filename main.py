@@ -25,8 +25,11 @@ while True:
         if event.type == pg.QUIT:
             pg.quit()
             exit()
-        # if event.type == pg.MOUSEMOTION:
-        #     if (player_rect.collidepoint(event.pos)): print("collision")
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
+                print('jump')
+        if event.type == pg.KEYUP:
+            print('key up')        
 
     screen.blit(sky_surface, (0,0))
     screen.blit(ground_surface, (0,300))
@@ -40,14 +43,10 @@ while True:
     screen.blit(snail_surface, snail_rect)
     screen.blit(player_surf, player_rect)
 
-    # check for collisions between my player rectangle and the snail rectangle
-
-    # if (player_rect.colliderect(snail_rect)):
-    #     print("collision")
-
-    # mouse_pos = pg.mouse.get_pos()
-    # if player_rect.collidepoint(mouse_pos):
-    #     print(pg.mouse.get_pressed())
+    # One of the ways to access the keys, the key.get_pressed function, similarely to the mouse returns an array of true or false saying if the key is pressed or not
+    # keys = pg.key.get_pressed()
+    # if keys[pg.K_SPACE]:
+    #     print("jump")
 
     pg.display.update()
     clock.tick(60)
